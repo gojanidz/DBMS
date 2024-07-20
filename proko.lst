@@ -1,0 +1,274 @@
+SQL> get Proko
+  1  DECLARE
+  2     customers_id NUMBER;
+  3     items_id  NUMBER;
+  4     items_quantity NUMBER;
+  5      a number:=&customers_id;
+  6     b number:=&items_id;
+  7     c number:=&items_quantity;
+  8     d NUMBER ;
+  9     f   NUMBER;
+ 10     OFFER_ROW NUMBER;
+ 11     H NUMBER;
+ 12  Begin
+ 13      SELECT qty_in_stock INTO f FROM items where item_no=b;
+ 14      Select count (*)  into OFFER_ROW  from  customers where id=a;
+ 15      Select count (*)  into H from items where c<=f; 
+ 16      If  OFFER_ROW!= 0 and H!=0 and f !=0 then
+ 17          d:=f-c;
+ 18         Update items set qty_in_stock=d where item_no=b;
+ 19         Insert into transactions (c_id, item_id, item_qty, trans_date ) values (a, b, c, TO_DATE(sysdate,'yyyy/mm/dd')); 
+ 20         dbms_output.put_line('The row was inserted successfully'); 
+ 21         elsif OFFER_ROW= 0 then 
+ 22            dbms_output.put_line('You have entered a wrong customer id');          
+ 23         elsif H=0 then 
+ 24            dbms_output.put_line('You have entered a wrong item quantity');
+ 25    END if;
+ 26  EXCEPTION
+ 27     WHEN NO_DATA_FOUND THEN
+ 28        dbms_output.put_line('You have entered a wrong item id');
+ 29  END;
+ 30* /
+ 31  
+ 32  /
+Enter value for customers_id: 2
+old   5:     a number:=&customers_id;
+new   5:     a number:=2;
+Enter value for items_id: 332
+old   6:    b number:=&items_id;
+new   6:    b number:=332;
+Enter value for items_quantity: 2
+old   7:    c number:=&items_quantity;
+new   7:    c number:=2;
+/
+*
+ERROR at line 30:
+ORA-06550: line 30, column 1: 
+PLS-00103: Encountered the symbol "/" The symbol "/" was ignored. 
+
+
+SQL> SET SERVEROUTPUT ON
+SQL> @ Proko
+Enter value for customers_id: 32131
+old   5:     a number:=&customers_id;
+new   5:     a number:=32131;
+Enter value for items_id: 7
+old   6:    b number:=&items_id;
+new   6:    b number:=7;
+Enter value for items_quantity: 31
+old   7:    c number:=&items_quantity;
+new   7:    c number:=31;
+You have entered a wrong customer id                                            
+
+PL/SQL procedure successfully completed.
+
+SQL> @ Proko
+Enter value for customers_id: 2
+old   5:     a number:=&customers_id;
+new   5:     a number:=2;
+Enter value for items_id: 423423
+old   6:    b number:=&items_id;
+new   6:    b number:=423423;
+Enter value for items_quantity: 34
+old   7:    c number:=&items_quantity;
+new   7:    c number:=34;
+You have entered a wrong item id                                                
+
+PL/SQL procedure successfully completed.
+
+SQL> @ Proko
+Enter value for customers_id: 2
+old   5:     a number:=&customers_id;
+new   5:     a number:=2;
+Enter value for items_id: 7
+old   6:    b number:=&items_id;
+new   6:    b number:=7;
+Enter value for items_quantity: 2341341234
+old   7:    c number:=&items_quantity;
+new   7:    c number:=2341341234;
+You have entered a wrong item quantity                                          
+
+PL/SQL procedure successfully completed.
+
+SQL> @ Proko
+Enter value for customers_id: 10
+old   5:     a number:=&customers_id;
+new   5:     a number:=10;
+Enter value for items_id: 35
+old   6:    b number:=&items_id;
+new   6:    b number:=35;
+Enter value for items_quantity: 4
+old   7:    c number:=&items_quantity;
+new   7:    c number:=4;
+DECLARE
+*
+ERROR at line 1:
+ORA-00001: unique constraint (DBCLASS56.PK_CUSTOMER_ITEM) violated 
+ORA-06512: at line 20 
+
+
+SQL> @ Proko
+Enter value for customers_id: 10
+old   5:     a number:=&customers_id;
+new   5:     a number:=10;
+Enter value for items_id: 25
+old   6:    b number:=&items_id;
+new   6:    b number:=25;
+Enter value for items_quantity: 4
+old   7:    c number:=&items_quantity;
+new   7:    c number:=4;
+The row was inserted successfully                                               
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from items;
+
+   ITEM_NO DESCRIPTIO QTY_IN_STOCK      PRICE                                   
+---------- ---------- ------------ ----------                                   
+         3 Pepsi             14968        1.5                                   
+         7 Butter             7976          2                                   
+         2 Bread              1000          2                                   
+         5 Biscuit            2757        1.8                                   
+         8 Ice Cream          2717          1                                   
+        25 Water              1310        3.5                                   
+         1 Cheese             9797        4.3                                   
+        15 Watermelon         1738        5.6                                   
+        35 Yogurt            12000          2                                   
+        28 Wine                755         10                                   
+
+10 rows selected.
+
+SQL> select * from items;
+
+   ITEM_NO DESCRIPTIO QTY_IN_STOCK      PRICE                                   
+---------- ---------- ------------ ----------                                   
+         3 Pepsi             14968        1.5                                   
+         7 Butter             7976          2                                   
+         2 Bread              1000          2                                   
+         5 Biscuit            2757        1.8                                   
+         8 Ice Cream          2717          1                                   
+        25 Water              1310        3.5                                   
+         1 Cheese             9797        4.3                                   
+        15 Watermelon         1738        5.6                                   
+        35 Yogurt            12000          2                                   
+        28 Wine                755         10                                   
+
+10 rows selected.
+
+SQL> select * from transactions;
+
+      C_ID    ITEM_ID   ITEM_QTY TRANS_DAT                                      
+---------- ---------- ---------- ---------                                      
+         1          3          6 18-SEP-21                                      
+         2          7          2 19-SEP-21                                      
+         4          5          2 02-SEP-21                                      
+         5          8          1 07-SEP-21                                      
+         6         25          6 08-SEP-21                                      
+         7          1          1 13-SEP-21                                      
+         8         15          1 04-SEP-21                                      
+         9         35          3 03-SEP-21                                      
+        10         28          1 09-SEP-21                                      
+        11          2          1 14-SEP-21                                      
+        10         35         10 07-MAY-21                                      
+
+      C_ID    ITEM_ID   ITEM_QTY TRANS_DAT                                      
+---------- ---------- ---------- ---------                                      
+        11         15          2 07-NOV-21                                      
+         2         35         16 16-NOV-21                                      
+        11          3          6 17-NOV-21                                      
+         2         28         12 01-OCT-21                                      
+         2         25         12 01-OCT-21                                      
+         6         28         12 31-OCT-21                                      
+         2         15          6 08-NOV-21                                      
+        10         15          6 18-NOV-21                                      
+        11         25         10 21-DEC-03                                      
+         2          3         11 21-DEC-04                                      
+         2          8         37 21-DEC-04                                      
+
+      C_ID    ITEM_ID   ITEM_QTY TRANS_DAT                                      
+---------- ---------- ---------- ---------                                      
+         2          1         52 21-DEC-05                                      
+         8         28         45 21-DEC-05                                      
+         5          1          3 21-DEC-05                                      
+         2          5          6 21-DEC-06                                      
+         5          7         24 21-DEC-06                                      
+         8         25         31 21-DEC-07                                      
+        10         25          4 21-DEC-07                                      
+
+29 rows selected.
+
+SQL> @ Proko
+Enter value for customers_id: 4
+old   5:     a number:=&customers_id;
+new   5:     a number:=4;
+Enter value for items_id: 15
+old   6:    b number:=&items_id;
+new   6:    b number:=15;
+Enter value for items_quantity: 12
+old   7:    c number:=&items_quantity;
+new   7:    c number:=12;
+The row was inserted successfully                                               
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from items;
+
+   ITEM_NO DESCRIPTIO QTY_IN_STOCK      PRICE                                   
+---------- ---------- ------------ ----------                                   
+         3 Pepsi             14968        1.5                                   
+         7 Butter             7976          2                                   
+         2 Bread              1000          2                                   
+         5 Biscuit            2757        1.8                                   
+         8 Ice Cream          2717          1                                   
+        25 Water              1310        3.5                                   
+         1 Cheese             9797        4.3                                   
+        15 Watermelon         1726        5.6                                   
+        35 Yogurt            12000          2                                   
+        28 Wine                755         10                                   
+
+10 rows selected.
+
+SQL> select * from transactions;
+
+      C_ID    ITEM_ID   ITEM_QTY TRANS_DAT                                      
+---------- ---------- ---------- ---------                                      
+         1          3          6 18-SEP-21                                      
+         2          7          2 19-SEP-21                                      
+         4          5          2 02-SEP-21                                      
+         5          8          1 07-SEP-21                                      
+         6         25          6 08-SEP-21                                      
+         7          1          1 13-SEP-21                                      
+         8         15          1 04-SEP-21                                      
+         9         35          3 03-SEP-21                                      
+        10         28          1 09-SEP-21                                      
+        11          2          1 14-SEP-21                                      
+        10         35         10 07-MAY-21                                      
+
+      C_ID    ITEM_ID   ITEM_QTY TRANS_DAT                                      
+---------- ---------- ---------- ---------                                      
+        11         15          2 07-NOV-21                                      
+         2         35         16 16-NOV-21                                      
+        11          3          6 17-NOV-21                                      
+         2         28         12 01-OCT-21                                      
+         2         25         12 01-OCT-21                                      
+         6         28         12 31-OCT-21                                      
+         2         15          6 08-NOV-21                                      
+        10         15          6 18-NOV-21                                      
+        11         25         10 21-DEC-03                                      
+         2          3         11 21-DEC-04                                      
+         2          8         37 21-DEC-04                                      
+
+      C_ID    ITEM_ID   ITEM_QTY TRANS_DAT                                      
+---------- ---------- ---------- ---------                                      
+         2          1         52 21-DEC-05                                      
+         8         28         45 21-DEC-05                                      
+         5          1          3 21-DEC-05                                      
+         2          5          6 21-DEC-06                                      
+         5          7         24 21-DEC-06                                      
+         8         25         31 21-DEC-07                                      
+        10         25          4 21-DEC-07                                      
+         4         15         12 21-DEC-07                                      
+
+30 rows selected.
+
+SQL> spool off
